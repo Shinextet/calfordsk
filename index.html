@@ -16,7 +16,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #fffafb; /* Warm White background */
+            background-color: #fffafb;
         }
 
         .calculator-container {
@@ -27,7 +27,6 @@
             padding: 3vh 3vw;
         }
 
-        /* Display Area - Window size အလိုက် font size လိုက်ပြောင်းပါမယ် */
         .display-container {
             flex: 1.2;
             display: flex;
@@ -50,13 +49,12 @@
             transition: font-size 0.2s ease;
         }
 
-        /* Buttons Grid - Window အပြည့်ယူထားပါတယ် */
         .buttons-grid {
             flex: 4;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(5, 1fr);
-            gap: 1.8vh; /* Window ကြီးရင် ခလုတ်ကြား ပိုကျယ်လာပါမယ် */
+            gap: 1.8vh;
         }
 
         button {
@@ -64,9 +62,8 @@
             height: 100%;
             background-color: #ffffff;
             color: #4a4a4a;
-            /* သင်ကြိုက်တဲ့ Border ဒီဇိုင်း */
             border: 2px solid #ffdae3; 
-            border-radius: 2.5vh; /* Window size နဲ့အညီ ပျော့ပြောင်းတဲ့ border radius */
+            border-radius: 2.5vh;
             font-size: clamp(1.2rem, 3.5vh, 2rem);
             font-weight: bold;
             cursor: pointer;
@@ -77,7 +74,6 @@
             box-shadow: 0 4px 10px rgba(255, 180, 200, 0.1);
         }
 
-        /* Hover and Active effects */
         button:hover {
             border-color: #ffb3c1;
             background: #fff8f9;
@@ -89,16 +85,13 @@
             border-color: #ff8fab !important;
         }
 
-        /* Operator and Special Key Colors */
         .operator {
             background-color: #fff0f3;
             color: #ff6090;
             border-color: #ffe5ec;
         }
 
-        .clear {
-            color: #ff4d6d;
-        }
+        .clear { color: #ff4d6d; }
 
         .equal {
             background: #ff99b3;
@@ -107,15 +100,7 @@
             box-shadow: 0 5px 15px rgba(255, 153, 179, 0.4);
         }
 
-        .equal:hover {
-            background-color: #ff85a3;
-            border-color: #ff85a3;
-        }
-
-        /* 0 ခလုတ်ကို ၂ ကွက်စာ ချဲ့ခြင်း */
-        .zero {
-            grid-column: span 2;
-        }
+        .zero { grid-column: span 2; }
     </style>
 </head>
 
@@ -164,6 +149,20 @@
 <script>
     const display = document.getElementById('result');
 
+    // Font size ကို အလိုအလျောက် ညှိပေးမယ့် function
+    function updateFontSize() {
+        const len = display.value.length;
+        if (len <= 7) {
+            display.style.fontSize = "clamp(2.5rem, 12vh, 6rem)";
+        } else if (len <= 10) {
+            display.style.fontSize = "clamp(2rem, 9vh, 4.5rem)";
+        } else if (len <= 15) {
+            display.style.fontSize = "clamp(1.5rem, 6vh, 3rem)";
+        } else {
+            display.style.fontSize = "clamp(1.2rem, 4vh, 2.2rem)";
+        }
+    }
+
     function appendValue(value) {
         if (display.value === '0' && value !== '.') {
             display.value = value;
@@ -171,12 +170,17 @@
             if (value === '.' && display.value.includes('.')) return;
             display.value += value;
         }
+        updateFontSize(); // ဂဏန်းရိုက်တိုင်း စစ်ဆေးမယ်
     }
 
-    function clearDisplay() { display.value = '0'; }
+    function clearDisplay() { 
+        display.value = '0'; 
+        updateFontSize(); // Reset လုပ်မယ်
+    }
 
     function deleteLast() {
         display.value = display.value.length > 1 ? display.value.slice(0, -1) : '0';
+        updateFontSize(); // ဖျက်လိုက်တိုင်း ပြန်စစ်မယ်
     }
 
     function calculate() {
@@ -186,20 +190,19 @@
                 expr = expr.replace(/(\d+)%/g, "($1/100)");
             }
             let result = eval(expr);
-            // တွက်ချက်မှု ရလဒ်ကို ၈ နေရာအထိ ထားရှိပေးပါတယ်
             display.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
+            updateFontSize(); // အဖြေထွက်လာရင်လည်း ပြန်ညှိမယ်
         } catch {
             display.value = "Error";
             setTimeout(clearDisplay, 1000);
         }
     }
 
-    // Keyboard support
     document.addEventListener('keydown', (e) => {
         let key = e.key;
         let id = "";
         if (key === 'Enter' || key === '=') id = "key-Enter";
-        else if (key === 'Backspace') id = "id-Backspace";
+        else if (key === 'Backspace') id = "key-Backspace";
         else if (key === 'Delete' || key === 'Escape') id = "key-Delete";
         else if (['+', '-', '*', '/', '%', '.'].includes(key)) id = "key-" + key;
         else if (!isNaN(key)) id = "key-" + key;
