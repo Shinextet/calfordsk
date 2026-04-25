@@ -2,13 +2,13 @@
   "name": "Premium Pink Calculator",
   "short_name": "Calculator",
   "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#ffeef3",
+  "display": "standalone",  /* ဒါလေးက App အစစ်လို ဖြစ်စေတာပါ */
+  "background_color": "#fffafb",
   "theme_color": "#ff99b3",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/564/564429.png",
-      "sizes": "512x512",
+      "src": "icon.png", 
+      "sizes": "192x192",
       "type": "image/png"
     }
   ]
