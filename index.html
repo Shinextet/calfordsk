@@ -2,116 +2,57 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Full-Screen Border Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium Calculator</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #fffafb;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #fffafb; }
 
         .calculator-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column;
             padding: 3vh 3vw;
         }
 
         .display-container {
-            flex: 1.2;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: flex-end;
-            padding: 2vh;
-            margin-bottom: 2vh;
+            flex: 1.2; display: flex; flex-direction: column;
+            justify-content: flex-end; align-items: flex-end;
+            padding: 2vh; margin-bottom: 2vh;
         }
 
         .display {
-            width: 100%;
-            border: none;
-            background: transparent;
-            outline: none;
-            text-align: right;
+            width: 100%; border: none; background: transparent;
+            outline: none; text-align: right;
             font-size: clamp(2.5rem, 12vh, 6rem); 
-            color: #4a4a4a;
-            font-weight: 700;
-            transition: font-size 0.2s ease;
+            color: #4a4a4a; font-weight: 700;
+            transition: font-size 0.15s ease;
         }
 
         .buttons-grid {
-            flex: 4;
-            display: grid;
+            flex: 4; display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(5, 1fr);
             gap: 1.8vh;
         }
 
         button {
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            color: #4a4a4a;
-            border: 2px solid #ffdae3; 
-            border-radius: 2.5vh;
-            font-size: clamp(1.2rem, 3.5vh, 2rem);
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100%; height: 100%; background: #fff;
+            color: #4a4a4a; border: 2px solid #ffdae3; 
+            border-radius: 2.5vh; font-size: clamp(1.2rem, 3.5vh, 2rem);
+            font-weight: bold; cursor: pointer;
+            transition: transform 0.1s; display: flex;
+            justify-content: center; align-items: center;
             box-shadow: 0 4px 10px rgba(255, 180, 200, 0.1);
         }
 
-        button:hover {
-            border-color: #ffb3c1;
-            background: #fff8f9;
-        }
-
-        button:active, button.active {
-            transform: scale(0.93);
-            background: #ffe5ec !important;
-            border-color: #ff8fab !important;
-        }
-
-        .operator {
-            background-color: #fff0f3;
-            color: #ff6090;
-            border-color: #ffe5ec;
-        }
-
+        button:active, button.active { transform: scale(0.92); background: #ffe5ec !important; }
+        .operator { background: #fff0f3; color: #ff6090; border-color: #ffe5ec; }
         .clear { color: #ff4d6d; }
-
-        .equal {
-            background: #ff99b3;
-            color: white;
-            border: 2px solid #ff99b3;
-            box-shadow: 0 5px 15px rgba(255, 153, 179, 0.4);
-        }
-
+        .equal { background: #ff99b3; color: white; border: none; }
         .zero { grid-column: span 2; }
     </style>
 </head>
-
-<link rel="manifest" href="manifest.json">
-
-<script>
-  if ('service worker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
-
 <body>
 
 <div class="calculator-container">
@@ -121,27 +62,27 @@
     
     <div class="buttons-grid">
         <button class="operator clear" id="key-Delete" onclick="clearDisplay()">C</button>
-        <button class="operator" id="key-/" onclick="appendValue('/')">÷</button>
-        <button class="operator" id="key-*" onclick="appendValue('*')">×</button>
+        <button class="operator" id="key-/" onclick="appendValue('÷')">÷</button>
+        <button class="operator" id="key-*" onclick="appendValue('×')">×</button>
         <button class="operator" id="key-Backspace" onclick="deleteLast()">⌫</button>
 
-        <button id="key-7" onclick="appendValue('7')">7</button>
-        <button id="key-8" onclick="appendValue('8')">8</button>
-        <button id="key-9" onclick="appendValue('9')">9</button>
-        <button class="operator" id="key--" onclick="appendValue('-')">−</button>
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button class="operator" onclick="appendValue('-')">−</button>
 
-        <button id="key-4" onclick="appendValue('4')">4</button>
-        <button id="key-5" onclick="appendValue('5')">5</button>
-        <button id="key-6" onclick="appendValue('6')">6</button>
-        <button class="operator" id="key-+" onclick="appendValue('+')">+</button>
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button class="operator" onclick="appendValue('+')">+</button>
 
-        <button id="key-1" onclick="appendValue('1')">1</button>
-        <button id="key-2" onclick="appendValue('2')">2</button>
-        <button id="key-3" onclick="appendValue('3')">3</button>
-        <button class="operator" id="key-%" onclick="appendValue('%')">%</button>
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        <button class="operator" onclick="appendValue('%')">%</button>
 
-        <button class="zero" id="key-0" onclick="appendValue('0')">0</button>
-        <button id="key-." onclick="appendValue('.')">.</button>
+        <button class="zero" onclick="appendValue('0')">0</button>
+        <button onclick="appendValue('.')">.</button>
         <button class="equal" id="key-Enter" onclick="calculate()">=</button>
     </div>
 </div>
@@ -149,71 +90,79 @@
 <script>
     const display = document.getElementById('result');
 
-    // Font size ကို အလိုအလျောက် ညှိပေးမယ့် function
+    // ၁။ Comma ခြားပေးသည့် Function
+    function formatNumber(numStr) {
+        let plainNumber = numStr.toString().replace(/,/g, '');
+        if (isNaN(plainNumber) || plainNumber === "") return numStr;
+        let parts = plainNumber.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join(".");
+    }
+
+    // ၂။ Font Size ညှိပေးသည့် Function
     function updateFontSize() {
         const len = display.value.length;
-        if (len <= 7) {
-            display.style.fontSize = "clamp(2.5rem, 12vh, 6rem)";
-        } else if (len <= 10) {
-            display.style.fontSize = "clamp(2rem, 9vh, 4.5rem)";
-        } else if (len <= 15) {
-            display.style.fontSize = "clamp(1.5rem, 6vh, 3rem)";
-        } else {
-            display.style.fontSize = "clamp(1.2rem, 4vh, 2.2rem)";
-        }
+        if (len <= 7) display.style.fontSize = "6rem";
+        else if (len <= 10) display.style.fontSize = "4.5rem";
+        else if (len <= 15) display.style.fontSize = "3rem";
+        else display.style.fontSize = "2.2rem";
     }
 
     function appendValue(value) {
-        if (display.value === '0' && value !== '.') {
+        let current = display.value.replace(/,/g, '');
+        const operators = ['+', '-', '×', '÷', '%'];
+
+        if (current === '0' && !operators.includes(value) && value !== '.') {
             display.value = value;
         } else {
-            if (value === '.' && display.value.includes('.')) return;
-            display.value += value;
+            // Operator ဆင့်မရအောင် စစ်ဆေးခြင်း
+            if (operators.includes(value) && operators.includes(current.slice(-1))) return;
+            if (value === '.' && current.includes('.')) return;
+            display.value = formatNumber(current + value);
         }
-        updateFontSize(); // ဂဏန်းရိုက်တိုင်း စစ်ဆေးမယ်
+        updateFontSize();
     }
 
-    function clearDisplay() { 
-        display.value = '0'; 
-        updateFontSize(); // Reset လုပ်မယ်
-    }
+    function clearDisplay() { display.value = '0'; updateFontSize(); }
 
     function deleteLast() {
-        display.value = display.value.length > 1 ? display.value.slice(0, -1) : '0';
-        updateFontSize(); // ဖျက်လိုက်တိုင်း ပြန်စစ်မယ်
+        let current = display.value.replace(/,/g, '');
+        display.value = current.length > 1 ? formatNumber(current.slice(0, -1)) : '0';
+        updateFontSize();
     }
 
     function calculate() {
         try {
-            let expr = display.value.replace(/×/g, '*').replace(/÷/g, '/');
-            if (expr.includes('%')) {
-                expr = expr.replace(/(\d+)%/g, "($1/100)");
-            }
+            let expr = display.value.replace(/,/g, '').replace(/×/g, '*').replace(/÷/g, '/');
+            if (expr.includes('%')) expr = expr.replace(/(\d+)%/g, "($1/100)");
+            
             let result = eval(expr);
-            display.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
-            updateFontSize(); // အဖြေထွက်လာရင်လည်း ပြန်ညှိမယ်
+            let finalResult = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
+            display.value = formatNumber(finalResult);
+            updateFontSize();
         } catch {
             display.value = "Error";
             setTimeout(clearDisplay, 1000);
         }
     }
 
+    // Keyboard support
     document.addEventListener('keydown', (e) => {
-        let key = e.key;
-        let id = "";
-        if (key === 'Enter' || key === '=') id = "key-Enter";
-        else if (key === 'Backspace') id = "key-Backspace";
-        else if (key === 'Delete' || key === 'Escape') id = "key-Delete";
-        else if (['+', '-', '*', '/', '%', '.'].includes(key)) id = "key-" + key;
-        else if (!isNaN(key)) id = "key-" + key;
-
-        const btn = document.getElementById(id);
-        if (btn) {
-            btn.classList.add('active');
-            setTimeout(() => btn.classList.remove('active'), 100);
-            btn.click();
+        if (e.key === 'Enter') calculate();
+        if (e.key === 'Backspace') deleteLast();
+        if (e.key === 'Escape') clearDisplay();
+        if (!isNaN(e.key) || ['+', '-', '*', '/', '.', '%'].includes(e.key)) {
+            let val = e.key.replace('*', '×').replace('/', '÷');
+            appendValue(val);
         }
     });
+
+    // Speed Optimization: Service Worker register
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        });
+    }
 </script>
 
 </body>
