@@ -1,15 +1,16 @@
 {
-  "name": "Premium Pink Calculator",
+  "name": "Premium Calculator",
   "short_name": "Calculator",
   "start_url": "index.html",
-  "display": "standalone",  /* ဒါလေးက App အစစ်လို ဖြစ်စေတာပါ */
+  "display": "standalone",
   "background_color": "#fffafb",
   "theme_color": "#ff99b3",
-"icons": [
-  {
-    "src": "https://cdn-icons-png.flaticon.com/512/564/564429.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }
-]
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2344/2344132.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
