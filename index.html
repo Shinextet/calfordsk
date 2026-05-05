@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Calculator</title>
+    <title>Premium Fast Calculator</title>
     <link rel="manifest" href="manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -24,7 +24,7 @@
         .display {
             width: 100%; border: none; background: transparent;
             outline: none; text-align: right;
-            font-size: clamp(2.5rem, 12vh, 6rem); 
+            font-size: 6rem; /* Default size */
             color: #4a4a4a; font-weight: 700;
             transition: font-size 0.15s ease;
         }
@@ -39,14 +39,15 @@
         button {
             width: 100%; height: 100%; background: #fff;
             color: #4a4a4a; border: 2px solid #ffdae3; 
-            border-radius: 2.5vh; font-size: clamp(1.2rem, 3.5vh, 2rem);
+            border-radius: 2.5vh; font-size: clamp(1.2rem, 3.5vh, 2.2rem);
             font-weight: bold; cursor: pointer;
-            transition: transform 0.1s; display: flex;
+            transition: transform 0.05s; display: flex;
             justify-content: center; align-items: center;
             box-shadow: 0 4px 10px rgba(255, 180, 200, 0.1);
+            user-select: none;
         }
 
-        button:active, button.active { transform: scale(0.92); background: #ffe5ec !important; }
+        button:active { transform: scale(0.92); background: #ffe5ec !important; }
         .operator { background: #fff0f3; color: #ff6090; border-color: #ffe5ec; }
         .clear { color: #ff4d6d; }
         .equal { background: #ff99b3; color: white; border: none; }
@@ -61,10 +62,10 @@
     </div>
     
     <div class="buttons-grid">
-        <button class="operator clear" id="key-Delete" onclick="clearDisplay()">C</button>
-        <button class="operator" id="key-/" onclick="appendValue('÷')">÷</button>
-        <button class="operator" id="key-*" onclick="appendValue('×')">×</button>
-        <button class="operator" id="key-Backspace" onclick="deleteLast()">⌫</button>
+        <button class="operator clear" onclick="clearDisplay()">C</button>
+        <button class="operator" onclick="appendValue('÷')">÷</button>
+        <button class="operator" onclick="appendValue('×')">×</button>
+        <button class="operator" onclick="deleteLast()">⌫</button>
 
         <button onclick="appendValue('7')">7</button>
         <button onclick="appendValue('8')">8</button>
@@ -83,14 +84,13 @@
 
         <button class="zero" onclick="appendValue('0')">0</button>
         <button onclick="appendValue('.')">.</button>
-        <button class="equal" id="key-Enter" onclick="calculate()">=</button>
+        <button class="equal" onclick="calculate()">=</button>
     </div>
 </div>
 
 <script>
     const display = document.getElementById('result');
 
-    // ၁။ Comma ခြားပေးသည့် Function
     function formatNumber(numStr) {
         let plainNumber = numStr.toString().replace(/,/g, '');
         if (isNaN(plainNumber) || plainNumber === "") return numStr;
@@ -99,7 +99,6 @@
         return parts.join(".");
     }
 
-    // ၂။ Font Size ညှိပေးသည့် Function
     function updateFontSize() {
         const len = display.value.length;
         if (len <= 7) display.style.fontSize = "6rem";
@@ -110,13 +109,12 @@
 
     function appendValue(value) {
         let current = display.value.replace(/,/g, '');
-        const operators = ['+', '-', '×', '÷', '%'];
+        const ops = ['+', '-', '×', '÷', '%'];
 
-        if (current === '0' && !operators.includes(value) && value !== '.') {
+        if (current === '0' && !ops.includes(value) && value !== '.') {
             display.value = value;
         } else {
-            // Operator ဆင့်မရအောင် စစ်ဆေးခြင်း
-            if (operators.includes(value) && operators.includes(current.slice(-1))) return;
+            if (ops.includes(value) && ops.includes(current.slice(-1))) return;
             if (value === '.' && current.includes('.')) return;
             display.value = formatNumber(current + value);
         }
@@ -135,10 +133,8 @@
         try {
             let expr = display.value.replace(/,/g, '').replace(/×/g, '*').replace(/÷/g, '/');
             if (expr.includes('%')) expr = expr.replace(/(\d+)%/g, "($1/100)");
-            
             let result = eval(expr);
-            let finalResult = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
-            display.value = formatNumber(finalResult);
+            display.value = formatNumber(Number.isInteger(result) ? result : parseFloat(result.toFixed(8)));
             updateFontSize();
         } catch {
             display.value = "Error";
@@ -146,18 +142,18 @@
         }
     }
 
-    // Keyboard support
+    // Keyboard support - ပိုမြန်အောင် ပြင်ဆင်ထားပါတယ်
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') calculate();
-        if (e.key === 'Backspace') deleteLast();
-        if (e.key === 'Escape') clearDisplay();
-        if (!isNaN(e.key) || ['+', '-', '*', '/', '.', '%'].includes(e.key)) {
-            let val = e.key.replace('*', '×').replace('/', '÷');
-            appendValue(val);
+        const key = e.key;
+        if (key === 'Enter' || key === '=') calculate();
+        else if (key === 'Backspace') deleteLast();
+        else if (key === 'Delete' || key === 'Escape') clearDisplay(); // Delete နှိပ်ရင် အကုန်ပျက်မယ်
+        else if (!isNaN(key) || ['+', '-', '*', '/', '.', '%'].includes(key)) {
+            appendValue(key.replace('*', '×').replace('/', '÷'));
         }
     });
 
-    // Speed Optimization: Service Worker register
+    // Speed Optimization: App ကို အမြန်ပွင့်စေမည့် Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(() => {});
